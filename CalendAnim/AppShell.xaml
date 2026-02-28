@@ -6,9 +6,16 @@
     xmlns:local="clr-namespace:CalendAnim"
     Title="CalendAnim">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        
+        <Tab Title="Accueil">
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
+        
+        <Tab Title="Ma liste">
+            <ShellContent ContentTemplate="{DataTemplate local:MyPage}" />
+        </Tab>
+
+    </TabBar>
 
 </Shell>

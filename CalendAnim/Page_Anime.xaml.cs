@@ -39,12 +39,21 @@ public partial class Page_Anime : ContentPage
             EnCours.Text = "Anime pas encore sortie, les episodes sortiront tout les " +_animeCourant.Broadcast.Day + "à" +_animeCourant.Broadcast.Time;
         else
             EnCours.Text = "Anime fini";
-        if (_dbService.ObtenirUnFavori(_animeCourant) != null)
+        var a = await _dbService.ObtenirUnFavori(_animeCourant);
+        if (a!=null)
         {
             BtnAjouterFavori.Text = "Dans ta liste ✓";
             BtnAjouterFavori.BackgroundColor = Colors.Green;
             BtnAjouterFavori.IsEnabled = false;    
-        } ;
+        }
+        else
+        {
+            BtnAjouterFavori.Text = "⭐ Ajouter à ma liste";
+            BtnAjouterFavori.BackgroundColor = Color.FromArgb("#2196F3");
+            BtnAjouterFavori.IsEnabled = true; 
+        }
+
+        ;
 
     }
 
