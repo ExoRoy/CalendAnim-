@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CalendAnim.Page_Anime"
+             Title="{Binding Title}"> 
+        
+              <ScrollView>
+                     <VerticalStackLayout Padding="20" Spacing="20">
+            
+                            <Image Source="{Binding Images.Jpg.ImageUrl}" 
+                                   HeightRequest="300" 
+                                   Aspect="AspectFit" />
+            
+                            <Label Text="{Binding Title}" 
+                                   FontSize="24" 
+                                   FontAttributes="Bold" 
+                                   HorizontalOptions="Center" 
+                                   HorizontalTextAlignment="Center" />
+                            
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                                   <ActivityIndicator x:Name="EpisodeSpinner" 
+                                                      IsRunning="True" 
+                                                      IsVisible="True" 
+                                                      Color="Blue" 
+                                                      HeightRequest="20" 
+                                                      WidthRequest="20" />
+                                   
+                                   <Label x:Name="EpisodeLabel" 
+                                          Text="Recherche des épisodes..." 
+                                          VerticalOptions="Center" 
+                                          FontAttributes="Italic" 
+                                          TextColor="Gray"/>
+                            </HorizontalStackLayout>
+                            
+                            <Label x:Name="EnCours"
+                                   TextColor="Black"
+                                   />
+                            
+                            
+                            <Label Text="Synopsis :" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   TextColor="Gray" />
+
+                            <Label Text="{Binding Synopsis}" 
+                                   FontSize="15" 
+                                   LineBreakMode="WordWrap" />
+
+                     </VerticalStackLayout>
+              </ScrollView>
+</ContentPage>

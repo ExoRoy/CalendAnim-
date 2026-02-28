@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization; // Indispensable pour lier le JSON au C#
+using System.Collections.ObjectModel;
+
 
 namespace CalendAnim.Modeles;
 
@@ -48,4 +50,9 @@ public class BroadcastInfo
     [JsonPropertyName("day")] public string Day { get; set; } // Ex: "Tuesdays"
 
     [JsonPropertyName("time")] public string Time { get; set; } // Ex: "00:00"
+}
+
+public class AnimeSearchResponse
+{
+    [JsonPropertyName("data")] public ObservableCollection<Anime> Data { get; set; }
 }
