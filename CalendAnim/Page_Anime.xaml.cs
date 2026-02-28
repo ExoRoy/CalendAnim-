@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CalendAnim.Modeles;
 using CalendAnim.Services;
+using SQLite;
 
 namespace CalendAnim;
 
@@ -12,6 +13,7 @@ public partial class Page_Anime : ContentPage
 {
     private Anime _animeCourant;
     private AnimeServices _animeServices;
+    private DataBaseService _dbService;
     
     public Page_Anime(Anime animeSelectionne)
     {
@@ -19,7 +21,7 @@ public partial class Page_Anime : ContentPage
         BindingContext = animeSelectionne;
         _animeCourant = animeSelectionne;
         _animeServices = new AnimeServices();
-        
+        _dbService = new DataBaseService();
     }
 
     protected override async void OnAppearing()
@@ -37,7 +39,23 @@ public partial class Page_Anime : ContentPage
             EnCours.Text = "Anime pas encore sortie, les episodes sortiront tout les " +_animeCourant.Broadcast.Day + "à" +_animeCourant.Broadcast.Time;
         else
             EnCours.Text = "Anime fini";
+        if (_dbService.ObtenirUnFavori(_animeCourant) != null)
+        {
+            BtnAjouterFavori.Text = "Dans ta liste ✓";
+            BtnAjouterFavori.BackgroundColor = Colors.Green;
+            BtnAjouterFavori.IsEnabled = false;    
+        } ;
 
+    }
+
+    private async void OnAjouterFavoriClicked(object? sender, EventArgs e)
+    {
+        
+        _dbService.AjouterFavoriAsync(_animeCourant.ToAnimeFavori());
+        BtnAjouterFavori.Text = "Dans ta liste ✓";
+        BtnAjouterFavori.BackgroundColor = Colors.Green;
+        BtnAjouterFavori.IsEnabled = false; // On empêche de recliquer dessus
+        
     }
     
 }

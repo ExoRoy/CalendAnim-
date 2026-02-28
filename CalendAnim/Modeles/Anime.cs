@@ -31,6 +31,16 @@ public class Anime
 
     [JsonPropertyName("broadcast")]
     public BroadcastInfo Broadcast { get; set; }
+
+    public AnimeFavori ToAnimeFavori()
+    {
+        AnimeFavori af = new AnimeFavori();
+        af.Id = Id;
+        af.Title = Title;
+        af.Synopsis = Synopsis;
+        af.ImageUrl = Images.Jpg.ImageUrl;
+        return af;
+    }
 }
 
 // Sous-classe pour lire la structure des images de Jikan
