@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendAnim", "CalendAnim\CalendAnim.csproj", "{1EAB1C03-EB6A-4E33-ACBC-E135C499C91F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1EAB1C03-EB6A-4E33-ACBC-E135C499C91F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EAB1C03-EB6A-4E33-ACBC-E135C499C91F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EAB1C03-EB6A-4E33-ACBC-E135C499C91F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EAB1C03-EB6A-4E33-ACBC-E135C499C91F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
