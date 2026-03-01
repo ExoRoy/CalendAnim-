@@ -31,6 +31,9 @@ public class Anime
 
     [JsonPropertyName("broadcast")]
     public BroadcastInfo Broadcast { get; set; }
+    
+    [JsonPropertyName("genres")]
+    public List<AnimeGenre> Genres { get; set; }
 
     public AnimeFavori ToAnimeFavori()
     {
@@ -39,6 +42,17 @@ public class Anime
         af.Title = Title;
         af.Synopsis = Synopsis;
         af.ImageUrl = Images.Jpg.ImageUrl;
+        
+        if (Genres != null)
+        {
+            af.GenresString = string.Join(", ", Genres.Select(g => g.Name));
+        }
+        
+        if (Broadcast != null)
+        {
+            af.BroadcastDay = Broadcast.Day;
+            af.BroadcastTime = Broadcast.Time;
+        }
         return af;
     }
 }
@@ -65,4 +79,9 @@ public class BroadcastInfo
 public class AnimeSearchResponse
 {
     [JsonPropertyName("data")] public ObservableCollection<Anime> Data { get; set; }
+}
+public class AnimeGenre
+{
+    [JsonPropertyName("name")] 
+    public string Name { get; set; }
 }

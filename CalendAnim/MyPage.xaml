@@ -2,24 +2,67 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CalendAnim.MyPage"
-             Title="Ma Liste">
+             Title="Ma Liste"
+             BackgroundColor="#FAFAFA">
 
-    <Grid Padding="20">
-        <CollectionView ItemsSource="{Binding MesFavoris}">
+    <Grid Padding="15" RowDefinitions="Auto, *">
+
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <Label Text="Ma Bibliothèque" 
+                   FontSize="20" 
+                   FontAttributes="Bold" 
+                   TextColor="Black" 
+                   VerticalOptions="Center" />
+        </Grid>
+
+        <CollectionView Grid.Row="1" 
+                        ItemsSource="{Binding MesFavoris}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnFavoriSelectionne">
+            
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" 
+                                 Span="3" 
+                                 HorizontalItemSpacing="10" 
+                                 VerticalItemSpacing="15" />
+            </CollectionView.ItemsLayout>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <HorizontalStackLayout Spacing="15" Padding="0, 0, 0, 15">
-                        <Image Source="{Binding ImageUrl}" 
-                               HeightRequest="80" 
-                               WidthRequest="60" 
-                               Aspect="AspectFill" />
-                        <Label Text="{Binding Title}" 
-                               FontAttributes="Bold" 
-                               VerticalOptions="Center" />
-                    </HorizontalStackLayout>
+                    
+                    <Border StrokeShape="RoundRectangle 10"
+                            StrokeThickness="0"
+                            HeightRequest="170"> 
+                        
+                        <Grid>
+                            
+                            <Image Source="{Binding ImageUrl}" 
+                                   Aspect="AspectFill" />
+                            
+                            <BoxView>
+                                <BoxView.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="Transparent" Offset="0.3" />
+                                        <GradientStop Color="#E6000000" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </BoxView.Background>
+                            </BoxView>
+
+                            <VerticalStackLayout VerticalOptions="End" Padding="8">
+                                <Label Text="{Binding Title}" 
+                                       TextColor="White" 
+                                       FontAttributes="Bold" 
+                                       FontSize="12"
+                                       MaxLines="2"
+                                       LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                            
+                        </Grid>
+                    </Border>
+                    
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </Grid>
 
+    </Grid>
 </ContentPage>

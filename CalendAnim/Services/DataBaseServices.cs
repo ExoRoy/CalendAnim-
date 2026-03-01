@@ -12,7 +12,7 @@ public class DataBaseService
     {
         if (_db != null) return;
 
-        // On cherche le dossier sécurisé de ton application sur le téléphone
+        // On cherche le dossier sécurisé l'application sur le téléphone
         var cheminFichier = Path.Combine(FileSystem.AppDataDirectory, "CalendAnim.db3");
         
         _db = new SQLiteAsyncConnection(cheminFichier);
@@ -42,6 +42,12 @@ public class DataBaseService
     {
         await Init();
         return await _db.Table<AnimeFavori>().FirstOrDefaultAsync(e => e.Id == anime.Id);
+    }
+
+    public async Task SupprimerFavori(AnimeFavori anime)
+    {
+        await Init();
+        await _db.DeleteAsync(anime);
     }
 
 }

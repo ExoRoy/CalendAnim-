@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CalendAnim.Modeles;
 using CalendAnim.Services;
-using SQLite;
+using System.Collections.ObjectModel;
 
 namespace CalendAnim;
 
@@ -14,6 +14,7 @@ public partial class Page_Anime : ContentPage
     private Anime _animeCourant;
     private AnimeServices _animeServices;
     private DataBaseService _dbService;
+    public ObservableCollection<Episode> ListeEpisodes { get; set; } = new ObservableCollection<Episode>();
     
     public Page_Anime(Anime animeSelectionne)
     {
@@ -29,42 +30,86 @@ public partial class Page_Anime : ContentPage
         base.OnAppearing();
         EpisodeSpinner.IsRunning = true;
         EpisodeSpinner.IsVisible = true;
-        int nb_episode = await _animeServices.GetNombreEpisodesSortisAsync(_animeCourant.Id);
-        EpisodeSpinner.IsVisible = false;
+        // On vide la liste au cas où
+        ListeEpisodes.Clear();
+        
+        ListeEpisodesContainer.BindingContext = this;
+
+        // On lance le téléchargement
+        EpisodeSpinner.IsRunning = true;
+        EpisodeSpinner.IsVisible = true;
+
+        var episodesTelecharges = await _animeServices.ObtenirEpisodesAsync(_animeCourant.Id);
+
         EpisodeSpinner.IsRunning = false;
-        EpisodeLabel.Text = "Il y'a actuellement " + nb_episode + "episodes";
+        EpisodeSpinner.IsVisible = false;
+
+        // On remplit notre liste pour l'affichage
+        if (episodesTelecharges.Count > 0)
+        {
+            TitreSectionEpisodes.Text = $"{episodesTelecharges.Count} Épisodes";
+            foreach (var ep in episodesTelecharges)
+            {
+                ListeEpisodes.Add(ep);
+            }
+        }
+        else
+        {
+            TitreSectionEpisodes.Text = "Aucun épisode trouvé";
+        }
+        
+        // Affiche le statut de l'anime
         if (_animeCourant.Status =="Currently Airing")
             EnCours.Text = "Anime en cours, les episodes sortent tout les " +_animeCourant.Broadcast.Day + " à " +_animeCourant.Broadcast.Time;
         else if (_animeCourant.Status == "Not yet aired")
             EnCours.Text = "Anime pas encore sortie, les episodes sortiront tout les " +_animeCourant.Broadcast.Day + "à" +_animeCourant.Broadcast.Time;
         else
             EnCours.Text = "Anime fini";
+        
+        //Affiche les genres
+        if (_animeCourant.Genres != null)
+            GenresLabel.Text = string.Join(" • ", _animeCourant.Genres.Select(g => g.Name));
+        
         var a = await _dbService.ObtenirUnFavori(_animeCourant);
         if (a!=null)
         {
-            BtnAjouterFavori.Text = "Dans ta liste ✓";
-            BtnAjouterFavori.BackgroundColor = Colors.Green;
-            BtnAjouterFavori.IsEnabled = false;    
+            IconeFavori.Text = "💙"; // Cœur bleu
+            TexteFavori.Text = "Dans la liste";
+            TexteFavori.TextColor = Color.FromArgb("#8A2BE2");
         }
         else
         {
-            BtnAjouterFavori.Text = "⭐ Ajouter à ma liste";
-            BtnAjouterFavori.BackgroundColor = Color.FromArgb("#2196F3");
-            BtnAjouterFavori.IsEnabled = true; 
+            IconeFavori.Text = "🤍"; 
+            TexteFavori.Text = "Ajouter";
+            TexteFavori.TextColor = Colors.White;
         }
-
+        
+        
         ;
 
     }
 
     private async void OnAjouterFavoriClicked(object? sender, EventArgs e)
     {
+        AnimeFavori animeFavori = await _dbService.ObtenirUnFavori(_animeCourant);
+        if (animeFavori == null)
+        {
+             await _dbService.AjouterFavoriAsync(_animeCourant.ToAnimeFavori());
+             IconeFavori.Text = "💙"; // Cœur bleu
+             TexteFavori.Text = "Dans la liste";
+             TexteFavori.TextColor = Color.FromArgb("#8A2BE2");
+        }
+        else
+        {
+           await _dbService.SupprimerFavori(animeFavori);
+           IconeFavori.Text = "🤍"; // Cœur blanc vide
+           TexteFavori.Text = "Ajouter";
+           TexteFavori.TextColor = Colors.White;
+        }
         
-        _dbService.AjouterFavoriAsync(_animeCourant.ToAnimeFavori());
-        BtnAjouterFavori.Text = "Dans ta liste ✓";
-        BtnAjouterFavori.BackgroundColor = Colors.Green;
-        BtnAjouterFavori.IsEnabled = false; // On empêche de recliquer dessus
         
     }
+
+    
     
 }

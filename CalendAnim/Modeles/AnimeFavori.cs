@@ -12,5 +12,9 @@ public class AnimeFavori
     
     public string Synopsis { get; set; }
     
+    public string GenresString { get; set; }
+    
+    public string BroadcastDay { get; set; }
+    public string BroadcastTime { get; set; }
     
 }

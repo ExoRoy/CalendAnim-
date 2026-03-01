@@ -21,19 +21,6 @@ public partial class MainPage : ContentPage
         AnimeCollectionView.ItemsSource = AnimesTrouves;
     }
 
-    private async void OnCounterClicked(object? sender, EventArgs e)
-    {
-        var animes = await _animeServices.RechercherAnimeAsync("Hunter X Hunter (2011)");
-        Debug.WriteLine("J'ai trouvé: " + animes.Count + " animes");
-        if (animes.Count > 0 && animes[0] != null)
-        {
-            Anime premier_anime = animes[0];
-            Debug.WriteLine("Le premiere anime est: " + premier_anime.Title);
-            Debug.WriteLine("Il possède: " + await _animeServices.GetNombreEpisodesSortisAsync(premier_anime.Id)+"episode");
-            
-        }
-    }
-
     private async void OnSearchButtonPressed(object? sender, EventArgs e)
     {
         if (LoadingSpinner.IsVisible) return; //Empeche les double clicks

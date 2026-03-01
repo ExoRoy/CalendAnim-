@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Net.Http.Json;
 using CalendAnim.Modeles;
+using System.Text.Json;
 
 namespace CalendAnim.Services;
 
@@ -16,40 +17,27 @@ public class AnimeServices
         // On lui donne l'adresse de base de l'API pour ne pas la retaper à chaque fois
         _httpClient.BaseAddress = new Uri("https://api.jikan.moe/v4/");
     }
-    // Le mot "Task" et "async" signifient que cette action se fait en arrière-plan
-    // pour ne pas figer l'écran du téléphone pendant le chargement.
-
-    /*public async Task<Anime> GetAnime(string AnimeTitle)
-    {
-        return await _httpClient.GetFromJsonAsync<Anime>($"anime/{AnimeTitle}");   
-    }*/
     
-    public async Task<int> GetNombreEpisodesSortisAsync(int animeId)
+    public async Task<List<Episode>> ObtenirEpisodesAsync(int animeId)
     {
         try
         {
-            // GetFromJsonAsync va télécharger le texte de l'API et le transformer automatiquement en nos objets C# !
-            var reponse = await _httpClient.GetFromJsonAsync<EpisodeResponse>($"anime/{animeId}/episodes");
-
-            if (reponse != null && reponse.Data != null && reponse.Data.Count > 0)
+            // On appelle l'URL spécifique pour les épisodes d'un animé
+            var reponse = await _httpClient.GetAsync($"https://api.jikan.moe/v4/anime/{animeId}/episodes");
+            
+            if (reponse.IsSuccessStatusCode)
             {
-                if (reponse.Pagination.LastVisiblePage>1)
-                {
-                    var episodes = await _httpClient.GetFromJsonAsync<EpisodeResponse>($"anime/{animeId}/episodes?page={reponse.Pagination.LastVisiblePage}"); 
-                    return episodes.Data.Max(e => e.NumeroEpisode);
-                    
-                }
-                return reponse.Data.Max(e => e.NumeroEpisode);
+                var json = await reponse.Content.ReadAsStringAsync();
+                var resultat = JsonSerializer.Deserialize<EpisodeResponse>(json);
+                return resultat?.Data ?? new List<Episode>();
             }
-
-            return 0; // Aucun épisode trouvé
         }
         catch (Exception ex)
         {
-            //  Prévoir le cas où l'utilisateur n'a pas internet
-            Console.WriteLine($"Erreur de connexion : {ex.Message}");
-            return 0;
+            Console.WriteLine($"Erreur API : {ex.Message}");
         }
+        
+        return new List<Episode>(); // Si ça plante, on renvoie une liste vide
     }
     
     public async Task<ObservableCollection<Anime>> RechercherAnimeAsync(string rechercheUtilisateur)

@@ -27,7 +27,29 @@ public partial class MyPage : ContentPage
         {
             MesFavoris.Add(anime);
         }
-        
-
     }
+    
+    
+    private async void OnFavoriSelectionne(object sender, SelectionChangedEventArgs e)
+    {
+        // 1. On récupère l'animé cliqué
+        var favoriClique = e.CurrentSelection.FirstOrDefault() as AnimeFavori;
+        
+        if (favoriClique != null)
+        {
+            // 2. On enlève la sélection visuelle (pour éviter que la carte reste grisée)
+            ((CollectionView)sender).SelectedItem = null;
+            
+            var animePourLaPage = new Anime 
+            { 
+                Id = favoriClique.Id, 
+                Title = favoriClique.Title,
+                Synopsis = favoriClique.Synopsis,
+                Images = new AnimeImages { Jpg = new CalendAnim.Modeles.ImageFormat { ImageUrl = favoriClique.ImageUrl } }
+            };
+
+            await Navigation.PushAsync(new Page_Anime(animePourLaPage));
+        }
+    }
+    
 }

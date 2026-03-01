@@ -17,6 +17,8 @@ public class Episode
     [JsonPropertyName("mal_id")] public int NumeroEpisode { get; set; } 
 
     [JsonPropertyName("title")] public string Titre { get; set; }
+    
+    [JsonPropertyName("aired")] public string Aired { get; set; }
 }
 
 // Les infos de pagination (utile pour les très longs animés)
