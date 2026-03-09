@@ -35,28 +35,46 @@ public partial class Page_Anime : ContentPage
         
         ListeEpisodesContainer.BindingContext = this;
 
-        // On lance le téléchargement
-        EpisodeSpinner.IsRunning = true;
-        EpisodeSpinner.IsVisible = true;
-
-        var episodesTelecharges = await _animeServices.ObtenirEpisodesAsync(_animeCourant.Id);
-
-        EpisodeSpinner.IsRunning = false;
-        EpisodeSpinner.IsVisible = false;
-
-        // On remplit notre liste pour l'affichage
-        if (episodesTelecharges.Count > 0)
+        var a = await _dbService.ObtenirUnFavori(_animeCourant);
+        if (a!=null)
         {
-            TitreSectionEpisodes.Text = $"{episodesTelecharges.Count} Épisodes";
-            foreach (var ep in episodesTelecharges)
+            IconeFavori.Text = "💙"; // Cœur bleu
+            TexteFavori.Text = "Dans la liste";
+            TexteFavori.TextColor = Color.FromArgb("#8A2BE2");
+            if (a.Episodes != null)
             {
-                ListeEpisodes.Add(ep);
+                var episodeTelecharges = a.Episodes;
             }
+            
         }
         else
         {
-            TitreSectionEpisodes.Text = "Aucun épisode trouvé";
+            IconeFavori.Text = "🤍"; 
+            TexteFavori.Text = "Ajouter";
+            TexteFavori.TextColor = Colors.White;
+            // On lance le téléchargement
+            EpisodeSpinner.IsRunning = true;
+            EpisodeSpinner.IsVisible = true;
+            var episodesTelecharges = await _animeServices.ObtenirEpisodesAsync(_animeCourant.Id);
+
+            EpisodeSpinner.IsRunning = false;
+            EpisodeSpinner.IsVisible = false;
+
+            // On remplit notre liste pour l'affichage
+            if (episodesTelecharges.Count > 0)
+            {
+                TitreSectionEpisodes.Text = $"{episodesTelecharges.Count} Épisodes";
+                foreach (var ep in episodesTelecharges)
+                {
+                    ListeEpisodes.Add(ep);
+                }
+            }
+            else
+            {
+                TitreSectionEpisodes.Text = "Aucun épisode trouvé";
+            }
         }
+        
         
         // Affiche le statut de l'anime
         if (_animeCourant.Status =="Currently Airing")
@@ -70,22 +88,6 @@ public partial class Page_Anime : ContentPage
         if (_animeCourant.Genres != null)
             GenresLabel.Text = string.Join(" • ", _animeCourant.Genres.Select(g => g.Name));
         
-        var a = await _dbService.ObtenirUnFavori(_animeCourant);
-        if (a!=null)
-        {
-            IconeFavori.Text = "💙"; // Cœur bleu
-            TexteFavori.Text = "Dans la liste";
-            TexteFavori.TextColor = Color.FromArgb("#8A2BE2");
-        }
-        else
-        {
-            IconeFavori.Text = "🤍"; 
-            TexteFavori.Text = "Ajouter";
-            TexteFavori.TextColor = Colors.White;
-        }
-        
-        
-        ;
 
     }
 

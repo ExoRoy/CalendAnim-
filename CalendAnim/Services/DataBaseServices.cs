@@ -1,6 +1,8 @@
 ﻿using SQLite;
 using CalendAnim.Modeles;
 using System.Collections.ObjectModel;
+using CalendAnim.Services;
+
 
 namespace CalendAnim.Services;
 
@@ -26,6 +28,18 @@ public class DataBaseService
     {
         await Init(); // On s'assure que la base est prête
         
+        //On verifie que l'animé a des episodes sinon on cherche s'il en a
+        if (anime.Episodes == null)
+        {
+            var animeServices = new AnimeServices();
+            anime.Episodes = await animeServices.ObtenirEpisodesAsync(anime.Id);
+        }
+        
+        if (anime.Episodes != null)
+        {
+            anime.EpisodesJson = System.Text.Json.JsonSerializer.Serialize(anime.Episodes);
+        }
+        
         // InsertOrReplace : S'il n'existe pas, il l'ajoute. Sinon met à jour 
         await _db.InsertOrReplaceAsync(anime); 
     }
@@ -41,7 +55,10 @@ public class DataBaseService
     public async Task<AnimeFavori> ObtenirUnFavori(Anime anime)
     {
         await Init();
-        return await _db.Table<AnimeFavori>().FirstOrDefaultAsync(e => e.Id == anime.Id);
+        AnimeFavori a = await _db.Table<AnimeFavori>().FirstOrDefaultAsync(e => e.Id == anime.Id);
+        if (!String.IsNullOrEmpty(a?.EpisodesJson))
+            a.Episodes = System.Text.Json.JsonSerializer.Deserialize<List<Episode>>(a.EpisodesJson);
+        return a;
     }
 
     public async Task SupprimerFavori(AnimeFavori anime)

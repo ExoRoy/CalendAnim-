@@ -42,6 +42,7 @@ public class Anime
         af.Title = Title;
         af.Synopsis = Synopsis;
         af.ImageUrl = Images.Jpg.ImageUrl;
+        af.Episodes = null; 
         
         if (Genres != null)
         {
@@ -53,6 +54,9 @@ public class Anime
             af.BroadcastDay = Broadcast.Day;
             af.BroadcastTime = Broadcast.Time;
         }
+        
+        
+        
         return af;
     }
 }
