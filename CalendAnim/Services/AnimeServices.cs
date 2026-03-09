@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Net.Http.Json;
 using CalendAnim.Modeles;
 using System.Text.Json;
@@ -23,13 +24,37 @@ public class AnimeServices
         try
         {
             // On appelle l'URL spécifique pour les épisodes d'un animé
-            var reponse = await _httpClient.GetAsync($"https://api.jikan.moe/v4/anime/{animeId}/episodes");
+            var reponse = await _httpClient.GetFromJsonAsync<EpisodeResponse>($"anime/{animeId}/episodes");
             
-            if (reponse.IsSuccessStatusCode)
+            
+
+            if (reponse != null && reponse.Data != null)
             {
-                var json = await reponse.Content.ReadAsStringAsync();
-                var resultat = JsonSerializer.Deserialize<EpisodeResponse>(json);
-                return resultat?.Data ?? new List<Episode>();
+               if (reponse.Pagination.LastVisiblePage == 1 )
+                   return reponse.Data;
+               var episodes = new List<Episode>();
+               episodes.AddRange(reponse.Data);
+               Debug.Print(reponse.Pagination.LastVisiblePage.ToString());
+               for (int i = 1; i < reponse.Pagination.LastVisiblePage; i++)
+               {
+                   try
+                   {
+                       await Task.Delay(1000);
+                       var r = await _httpClient.GetFromJsonAsync<EpisodeResponse>($"anime/{animeId}/episodes?page={i + 1}");
+                       if (r != null && r.Data != null) 
+                           episodes.AddRange(r.Data);
+                       else
+                           break;
+                   }
+                   catch (Exception e)
+                   {
+                       Debug.Print($"Nous avons crash a la page {i+1} : {e.Message}"); 
+                       break;   
+                   }
+                   
+               }
+               return episodes;
+                   
             }
         }
         catch (Exception ex)
