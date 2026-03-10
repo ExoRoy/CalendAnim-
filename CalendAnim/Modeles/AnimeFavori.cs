@@ -17,7 +17,7 @@ public class AnimeFavori
     public string BroadcastDay { get; set; }
     public string BroadcastTime { get; set; }
 
-    public string EpisodesJson;
+    public string EpisodesJson { get; set; } 
     
     [Ignore] public List<Episode> Episodes { get; set; }
     
