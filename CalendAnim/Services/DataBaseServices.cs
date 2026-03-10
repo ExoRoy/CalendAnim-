@@ -57,7 +57,7 @@ public class DataBaseService
         await Init();
         AnimeFavori a = await _db.Table<AnimeFavori>().FirstOrDefaultAsync(e => e.Id == anime.Id);
         if (!String.IsNullOrEmpty(a?.EpisodesJson))
-            a.Episodes = System.Text.Json.JsonSerializer.Deserialize<List<Episode>>(a.EpisodesJson);
+            a.Episodes = await Task.Run(() => System.Text.Json.JsonSerializer.Deserialize<List<Episode>>(a.EpisodesJson));
         return a;
     }
 

@@ -19,6 +19,6 @@ public class AnimeFavori
 
     public string EpisodesJson { get; set; } 
     
-    [Ignore] public List<Episode> Episodes { get; set; }
+    [Ignore] public List<Episode>? Episodes { get; set; }
     
 }
