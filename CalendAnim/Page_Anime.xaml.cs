@@ -31,10 +31,7 @@ public partial class Page_Anime : ContentPage
         if (episodes.Count > 0)
         {
             TitreSectionEpisodes.Text = $"{episodes.Count} Épisodes";
-            foreach (var ep in episodes)
-            {
-                ListeEpisodes.Add(ep);
-            }
+            BindableLayout.SetItemsSource(ListeEpisodesContainer, episodes);
         }
         else
         {
